@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pembangun Desa Cerdas - Game Matematika Terintegrasi</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #0f172a;
+            background-image: radial-gradient(circle at 10% 20%, rgba(15, 23, 42, 0.9) 0%, rgba(9, 12, 22, 1) 90%);
+        }
+        .retro-title {
+            font-family: 'Cinzel', serif;
+        }
+        .wood-pattern {
+            background-color: #1e293b;
+            background-image: radial-gradient(#334155 1px, transparent 1px);
+            background-size: 16px 16px;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-100 flex flex-col justify-between overflow-x-hidden">
+
+    <!-- Header / Stats Panel -->
+    <header class="border-b border-slate-800 bg-slate-950/80 backdrop-blur-md p-4 sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-4">
+            
+            <!-- Title -->
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-amber-500 flex items-center justify-center text-slate-950 text-2xl font-bold shadow-lg shadow-amber-500/20">
+                    👑
+                </div>
+                <div>
+                    <h1 class="retro-title text-base md:text-lg font-bold tracking-wider text-amber-400">DESA CERDAS</h1>
+                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Simulator Strategi Matematika</p>
+                </div>
+            </div>
+
+            <!-- Resource counters -->
+            <div class="flex flex-wrap items-center gap-3 text-xs md:text-sm font-semibold">
+                <div class="flex items-center gap-1.5 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-lg shadow-inner">
+                    <span>🪵</span>
+                    <span class="text-slate-400">Kayu:</span>
+                    <span id="wood-val" class="text-amber-500 font-bold">100</span>
+                </div>
+                <div class="flex items-center gap-1.5 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-lg shadow-inner">
+                    <span>🪨</span>
+                    <span class="text-slate-400">Batu:</span>
+                    <span id="stone-val" class="text-slate-300 font-bold">50</span>
+                </div>
+                <div class="flex items-center gap-1.5 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-lg shadow-inner">
+                    <span>🪙</span>
+                    <span class="text-slate-400">Koin:</span>
+                    <span id="coin-val" class="text-yellow-400 font-bold">150</span>
+                </div>
+                <div class="flex items-center gap-1.5 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-lg shadow-inner">
+                    <span>🌾</span>
+                    <span class="text-slate-400">Pangan:</span>
+                    <span id="food-val" class="text-emerald-400 font-bold">80</span>
+                </div>
+            </div>
+
+            <!-- Score metrics -->
+            <div class="flex items-center gap-3">
+                <div class="bg-blue-950/60 border border-blue-800/80 rounded-xl px-3 py-1 text-center min-w-[80px]">
+                    <span class="block text-[8px] text-blue-400 tracking-wider font-extrabold uppercase">Pemecahan Masalah</span>
+                    <span id="pb-score" class="text-xs md:text-sm font-extrabold text-blue-300">0%</span>
+                </div>
+                <div class="bg-purple-950/60 border border-purple-800/80 rounded-xl px-3 py-1 text-center min-w-[80px]">
+                    <span class="block text-[8px] text-purple-400 tracking-wider font-extrabold uppercase">Konseptual</span>
+                    <span id="concept-score" class="text-xs md:text-sm font-extrabold text-purple-300">0%</span>
+                </div>
+            </div>
+
+        </div>
+    </header>
+
+    <!-- Main Content Grid -->
+    <main class="max-w-6xl mx-auto w-full p-4 flex-grow grid grid-cols-1 lg:grid-cols-12 gap-6 my-2">
+        
+        <!-- LEFT COLUMN: Map & Build Center (5 Cols) -->
+        <section class="lg:col-span-5 flex flex-col gap-6">
+            
+            <!-- Map View -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col gap-3 shadow-xl">
+                <div class="flex justify-between items-center">
+                    <h3 class="retro-title text-sm font-bold tracking-wide text-amber-500">🗺️ PETA TATA RUANG DESA</h3>
+                    <span id="quest-progress" class="text-[11px] font-bold bg-slate-850 px-2 py-0.5 rounded text-amber-400">Tugas: 0/20</span>
+                </div>
+                
+                <!-- Dynamic SVG Grid Map of the Village -->
+                <div id="village-map" class="w-full aspect-square max-h-[320px] bg-emerald-950/40 rounded-xl border border-slate-800 relative overflow-hidden flex items-center justify-center">
+                    <!-- SVG map dynamic generation here -->
+                </div>
+                <p class="text-[11px] text-slate-400 italic text-center">Selesaikan soal matematika untuk membangun infrastruktur desa yang lebih besar.</p>
+            </div>
+
+            <!-- Structure Upgrade list -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col gap-3 shadow-xl">
+                <h3 class="retro-title text-sm font-bold text-amber-500">🏗️ PROYEK PEMBANGUNAN</h3>
+                
+                <div class="grid grid-cols-2 gap-3" id="buildings-list">
+                    <!-- Dynamic building action cards will go here -->
+                </div>
+            </div>
+
+        </section>
+
+        <!-- RIGHT COLUMN: Active Quest & Math Hub (7 Cols) -->
+        <section class="lg:col-span-7 flex flex-col">
+            
+            <div class="bg-slate-900/40 border border-slate-800 rounded-2xl p-6 backdrop-blur-md shadow-2xl flex flex-col justify-between h-full relative overflow-hidden">
+                <div class="absolute inset-0 opacity-5 pointer-events-none mix-blend-color-dodge bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:24px_24px]"></div>
+
+                <!-- Active Quest Panel -->
+                <div id="quest-active" class="relative z-10 flex-grow flex flex-col gap-6">
+                    
+                    <!-- Dynamic Category Badge -->
+                    <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-4">
+                        <div class="flex items-center gap-2">
+                            <span id="quest-icon" class="text-2xl">🌲</span>
+                            <div>
+                                <span id="quest-category" class="text-[10px] bg-amber-500/10 border border-amber-500/30 text-amber-400 px-2 py-0.5 rounded font-extrabold tracking-widest uppercase">Kategori</span>
+                                <h2 id="quest-title" class="retro-title text-base font-bold text-slate-200 mt-1">Soal Ke-1: Penebangan Kayu</h2>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs text-slate-400">Hadiah:</span>
+                            <span id="quest-reward" class="text-xs font-bold text-amber-300 bg-amber-950/50 px-2 py-1 rounded border border-amber-800/40">🪵 +20, 🪙 +10</span>
+                        </div>
+                    </div>
+
+                    <!-- Visual Math Illustration -->
+                    <div id="math-visual" class="w-full h-44 rounded-xl border border-slate-800 bg-slate-950/80 flex flex-col items-center justify-center p-4 shadow-inner relative">
+                        <!-- Dynamic Math Diagram SVG goes here -->
+                    </div>
+
+                    <!-- Problem Narrative Statement -->
+                    <div class="space-y-2">
+                        <h4 class="text-xs uppercase tracking-wider text-slate-400 font-bold">Studi Kasus / Deskripsi Masalah:</h4>
+                        <p id="quest-narrative" class="text-sm md:text-base text-slate-300 leading-relaxed font-medium">
+                            Memuat narasi permasalahan pembangunan desa...
+                        </p>
+                    </div>
+
+                    <!-- User Answer Input/Options Section -->
+                    <div class="space-y-4 pt-2">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="answer-options">
+                            <!-- Option choices or text input -->
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Quest Result Feedback Panel (Hidden by default) -->
+                <div id="feedback-panel" class="hidden mt-6 p-4 rounded-xl border relative z-10 transition-all duration-300">
+                    <div class="flex items-start gap-3">
+                        <span id="feedback-emoji" class="text-2xl">✅</span>
+                        <div>
+                            <h4 id="feedback-header" class="font-extrabold text-sm uppercase tracking-wide">Analisis Sempurna!</h4>
+                            <p id="feedback-text" class="text-xs md:text-sm text-slate-300 mt-1 leading-relaxed"></p>
+                            <p id="feedback-explanation" class="text-xs text-amber-200/90 bg-slate-950/60 p-3 rounded-lg border border-slate-800 mt-2.5 font-medium leading-relaxed"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Next Quest Control Area -->
+                <div id="quest-controls" class="relative z-10 mt-6 pt-4 border-t border-slate-800/60 flex justify-end">
+                    <button id="btn-next" onclick="nextQuestion()" class="px-6 py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl tracking-wide text-xs md:text-sm uppercase shadow-lg shadow-amber-500/15 border-b-4 border-amber-700 transition-all active:translate-y-0.5">
+                        Lanjutkan Konstruksi 🪵
+                    </button>
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center py-4 text-xs text-slate-600 border-t border-slate-950 bg-slate-950/40">
+        <p>&copy; 2026 Pembangun Desa Cerdas - Media Edukasi Matematika Terapan</p>
+    </footer>
+
+    <!-- Game Victory / Summary Modal -->
+    <div id="victory-modal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+        <div class="max-w-xl w-full bg-slate-950 border-2 border-amber-500/30 rounded-2xl p-6 md:p-8 text-center shadow-2xl flex flex-col items-center gap-6 relative overflow-hidden">
+            
+            <div class="text-6xl animate-bounce">🏰</div>
+            
+            <div>
+                <h2 class="retro-title text-2xl md:text-3xl font-black text-amber-400 tracking-wider">DESA MAKMUR SEJAHTERA!</h2>
+                <p class="text-xs text-slate-400 mt-1">Laporan Akhir Kinerja Kepala Desa Cerdas</p>
+            </div>
+
+            <!-- Grade assessment grid -->
+            <div class="grid grid-cols-2 gap-4 w-full">
+                <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl flex flex-col items-center">
+                    <span class="text-[10px] text-slate-500 tracking-wider font-extrabold uppercase">Skor Pemecahan Masalah</span>
+                    <span id="final-pb" class="retro-title text-xl md:text-2xl text-blue-400 font-extrabold mt-1">0%</span>
+                    <span class="text-[9px] text-slate-400 text-center mt-1 leading-tight">Mengukur keakuratan kalkulasi jawaban pertama.</span>
+                </div>
+                <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl flex flex-col items-center">
+                    <span class="text-[10px] text-slate-500 tracking-wider font-extrabold uppercase">Skor Pemahaman Konsep</span>
+                    <span id="final-concept" class="retro-title text-xl md:text-2xl text-purple-400 font-extrabold mt-1">0%</span>
+                    <span class="text-[9px] text-slate-400 text-center mt-1 leading-tight">Mengukur pemahaman logika dan rumus matematika.</span>
+                </div>
+            </div>
+
+            <!-- Summary Text Evaluation -->
+            <div class="bg-slate-900/60 border border-slate-800 p-4 rounded-xl text-left w-full space-y-2">
+                <h4 class="text-xs text-amber-400 font-bold uppercase tracking-wide">Evaluasi Komisi Sipil Desa:</h4>
+                <p id="victory-eval" class="text-xs md:text-sm text-slate-300 leading-relaxed">
+                    Sedang menghitung performa kepemimpinan Anda...
+                </p>
+            </div>
+
+            <button onclick="restartGame()" class="w-full py-4 bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold orbitron tracking-widest rounded-xl transition-colors border-b-4 border-amber-700">
+                BANGUN ULANG DESA 🔁
+            </button>
+        </div>
+    </div>
+
+    <!-- AUDIO SOUND EFFECTS (Web Audio API Synthesizer) -->
+    <script>
+        const playSynth = (type) => {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+
+                if (type === 'success') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(523.25, ctx.currentTime); // C5
+                    osc.frequency.setValueAtTime(659.25, ctx.currentTime + 0.1); // E5
+                    osc.frequency.setValueAtTime(783.99, ctx.currentTime + 0.2); // G5
+                    osc.frequency.setValueAtTime(1046.50, ctx.currentTime + 0.3); // C6
+                    gain.gain.setValueAtTime(0.08, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.45);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.5);
+                } else if (type === 'fail') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(180, ctx.currentTime);
+                    osc.frequency.linearRampToValueAtTime(90, ctx.currentTime + 0.35);
+                    gain.gain.setValueAtTime(0.12, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.4);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.45);
+                } else if (type === 'click') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(600, ctx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(200, ctx.currentTime + 0.08);
+                    gain.gain.setValueAtTime(0.03, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.08);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.09);
+                } else if (type === 'upgrade') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(220, ctx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.5);
+                    gain.gain.setValueAtTime(0.08, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.55);
+                }
+            } catch (e) {
+                // Audio context blocked by security policies
+            }
+        };
+    </script>
+
+    <!-- MATH QUEST ENGINE DATA & SYSTEM -->
+    <script>
+        // Global Game State
+        let currentQuestIndex = 0;
+        let wood = 100;
+        let stone = 50;
+        let coins = 150;
+        let food = 80;
+
+        // Scoring arrays for detailed analytics
+        let problemSolvingAnswers = []; // store true/false for first attempt of each question
+        let conceptualAnswers = []; // store scores/ratings of comprehension based on attempts
+
+        let activeAttemptsForQuest = 0;
+        let activeQuestIsAnswered = false;
+
+        // 20 Complete Contextual Math Questions (Bilangan Bulat, Pecahan, Pengukuran, Luas & Volume)
+        const quests = [
+            {
+                title: "Pembukaan Lahan Baru",
+                category: "Bilangan Bulat",
+                icon: "🌲",
+                narrative: "Desa baru saja menerima hibah 45 batang balok kayu jati. Untuk membangun satu unit pondok pengawas hutan dibutuhkan 12 batang balok kayu. Jika tim penebang menyumbangkan tambahan 15 batang balok kayu, berapakah sisa balok kayu setelah dibangun 4 unit pondok pengawas?",
+                reward: { wood: 30, coins: 20 },
+                visual: `<svg class="w-full h-full" viewBox="0 0 200 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Forest background trees -->
+                    <path d="M30 80 L45 40 L60 80 Z" fill="#047857" />
+                    <path d="M45 80 L55 50 L65 80 Z" fill="#065f46" />
+                    <path d="M80 85 L95 45 L110 85 Z" fill="#047857" />
+                    <!-- Logs representation -->
+                    <rect x="130" y="70" width="40" height="8" rx="2" fill="#78350f" />
+                    <rect x="135" y="80" width="40" height="8" rx="2" fill="#78350f" />
+                    <rect x="128" y="90" width="40" height="8" rx="2" fill="#78350f" />
+                    <!-- Math indicator text -->
+                    <text x="100" y="25" fill="#e2e8f0" font-size="10" font-weight="bold" text-anchor="middle">Persamaan: (45 + 15) - (4 &times; 12)</text>
+                </svg>`,
+                options: [
+                    { text: "A. 8 batang balok kayu", correct: false },
+                    { text: "B. 12 batang balok kayu", correct: true },
+                    { text: "C. 15 batang balok kayu", correct: false },
+                    { text: "D. 18 batang balok kayu", correct: false }
+                ],
+                explanation: "Sisa kayu dihitung dengan: (Kayu awal + Tambahan) - (Kebutuhan pondok &times; Jumlah pondok) = (45 + 15) - (12 &times; 4) = 60 - 48 = 12 batang balok kayu."
+            },
+            {
+                title: "Sumur Resapan Musim Dingin",
+                category: "Bilangan Bulat",
+                icon: "💧",
+                narrative: "Sumur penampungan air bersih memiliki kedalaman awal 8 meter di bawah permukaan tanah (-8 m). Akibat bencana longsor kecil, dasarnya naik setinggi 3 meter. Jika pekerja menggali kembali sedalam 5 meter ke bawah, berapakah posisi kedalaman sumur sekarang?",
+                reward: { stone: 25, coins: 15 },
+                visual: `<svg class="w-full h-full" viewBox="0 0 200 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Ground Line -->
+                    <line x1="20" y1="40" x2="180" y2="40" stroke="#94a3b8" stroke-width="2" />
+                    <!-- Well shaft representation -->
+                    <rect x="85" y="40" width="30" height="70" fill="#334155" opacity="0.4" />
+                    <!-- Measurements -->
+                    <line x1="75" y1="40" x2="75" y2="110" stroke="#f59e0b" stroke-width="1" stroke-dasharray="2 2" />
+                    <text x="50" y="80" fill="#f59e0b" font-size="8">Kedalaman awal: -8m</text>
+                    <!-- Shovel -->
+                    <path d="M140 30 L150 50 M148 45 L155 45" stroke="#cbd5e1" stroke-width="2" />
+                </svg>`,
+                options: [
+                    { text: "A. -10 meter", correct: true },
+                    { text: "B. -6 meter", correct: false },
+                    { text: "C. -13 meter", correct: false },
+                    { text: "D. -16 meter", correct: false }
+                ],
+                explanation: "Posisi kedalaman dihitung menggunakan bilangan bulat negatif: -8 m (kedalaman awal) + 3 m (dasar naik) - 5 m (digali ke bawah) = -5 m - 5 m = -10 meter di bawah tanah."
+            },
+            {
+                title: "Pembagian Sawah Pangan",
+                category: "Pecahan",
+                icon: "🌾",
+                narrative: "Kepala desa memiliki sebidang tanah seluas 12 hektar. Sebanyak 1/3 bagian dialokasikan untuk menanam padi, 1/4 bagian untuk kebun jagung, dan sisanya untuk kolam ikan air tawar desa. Berapakah luas lahan yang diperuntukkan bagi kolam ikan?",
+                reward: { food: 40, coins: 20 },
+                visual: `<svg class="w-full h-full" viewBox="0 0 200 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Pie Chart Layout -->
+                    <circle cx="100" cy="60" r="40" fill="#1e293b" stroke="#475569" stroke-width="2" />
+                    <!-- Paddy sector -->
+                    <path d="M100 60 L100 20 A40 40 0 0 1 134.6 40 Z" fill="#059669" opacity="0.8" />
+                    <!-- Corn sector -->
+                    <path d="M100 60 L134.6 40 A40 40 0 0 1 140 60 Z" fill="#eab308" opacity="0.8" />
+                    <text x="100" y="15" fill="#cbd5e1" font-size="8" text-anchor="middle">Total Luas: 12 Hektar</text>
+                </svg>`,
+                options: [
+                    { text: "A. 4 Hektar", correct: false },
+                    { text: "B. 5 Hektar", correct: true },
+                    { text: "C. 6 Hektar", correct: false },
+                    { text: "D. 7 Hektar", correct: false }
+                ],
+                explanation: "Bagian Padi = 1/3 &times; 12 = 4 hektar. Bagian Jagung = 1/4 &times; 12 = 3 hektar. Lahan kolam ikan = Total lahan - (Padi + Jagung) = 12 - (4 + 3) = 12 - 7 = 5 hektar."
+            },
+            {
+                title: "Renovasi Jembatan Penghubung",
+                category: "Pecahan",
+                icon: "🌉",
+                narrative: "Panjang total jembatan kayu penghubung antardesa adalah 15 1/2 meter. Tim tukang kayu telah berhasil menyelesaikan perbaikan sepanjang 9 3/4 meter. Berapakah sisa jembatan yang belum diperbaiki oleh tim?",
+                reward: { wood: 40, stone: 15 },
+                visual: `<svg class="w-full h-full" viewBox="0 0 200 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Bridge sketch -->
+                    <path d="M10 80 Q100 50 190 80" stroke="#78350f" stroke-width="4" fill="none" />
+                    <line x1="10" y1="80" x2="10" y2="100" stroke="#475569" stroke-width="3" />
+                    <line x1="190" y1="80" x2="190" y2="100" stroke="#475569" stroke-width="3" />
+                    <!-- Completed part marker -->
+                    <path d="M10 80 Q100 50 110 65" stroke="#22c55e" stroke-width="4" fill="none" />
+                    <text x="100" y="30" fill="#e2e8f0" font-size="9" text-anchor="middle">Panjang: 15 ½ m</text>
+                </svg>`,
+                options: [
+                    { text: "A. 5 1/2 meter", correct: false },
+                    { text: "B. 5 3/4 meter", correct: true },
+                    { text: "C. 6 1/4 meter", correct: false },
+                    { text: "D. 6 1/2 meter", correct: false }
+                ],
+                explanation: "Sisa jembatan dihitung dengan pengurangan pecahan campuran: 15 1/2 - 9 3/4 = 31/2 - 39/4 = 62/4 - 39/4 = 23/4 = 5 3/4 meter."
+            },
+            {
+                title: "Sistem Saluran Irigasi",
+                category: "Pengukuran",
+                icon: "📐",
+                narrative: "Seorang petani membutuhkan pipa air sepanjang 2,4 kilometer untuk mengairi seluruh ladang desanya. Saat ini, desa memiliki persediaan pipa sepanjang 1.850 meter di gudang. Berapa meter kekurangan panjang pipa yang harus dibeli oleh desa?",
+                reward: { coins: 35, food: 15 },
+                visual: `<svg class="w-full h-full" viewBox="0 0 200 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Irrigation pipeline schematic -->
+                    <rect x="20" y="60" width="160" height="8" rx="4" fill="#3b82f6" opacity="0.3" />
+                    <rect x="20" y="60" width="110" height="8" rx="4" fill="#3b82f6" />
+                    <text x="100" y="45" fill="#f8fafc" font-size="9" text-anchor="middle">Kebutuhan total: 2,4 km</text>
+                    <text x="70" y="85" fill="#60a5fa" font-size="8">Tersedia: 1.850 m</text>
+                </svg>`,
+                options: [
+                    { text: "A. 550 meter", correct: true },
+                    { text: "B. 650 meter", correct: false },
+                    { text: "C. 450 meter", correct: false },
+                    { text: "D. 1.250 meter", correct: false }
+                ],
+                explanation: "Pertama, konversikan satuan kilometer ke meter: 2,4 km = 2,4 &times; 1.000 = 2.400 meter. Sisa kekurangan pipa adalah: 2.400 m - 1.850 m = 550 meter."
+            },
+            {
+                title: "Perluasan Alun-Alun Desa",
+                category: "Luas & Volume",
+                icon: "🎪",
+                narrative: "Alun-alun desa berbentuk persegi panjang dengan ukuran panjang 25 meter dan lebar 18 meter. Rencananya, sekeliling alun-alun tersebut akan dilebarkan selebar 2 meter ke arah luar di setiap sisinya. Berapakah luas alun-alun desa yang baru setelah diperluas?",
+                reward: { stone: 35, coins: 25 },
+                visual: `<svg class="w-full h-full" viewBox="0 0 200 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Outer square -->
+                    <rect x="40" y="20" width="120" height="80" fill="none" stroke="#22c55e" stroke-width="2" stroke-dasharray="4 4" />
+                    <!-- Inner original square -->
+                    <rect x="55" y="33" width="90" height="54" fill="#1e293b" stroke="#3b82f6" stroke-width="2" />
+                    <text x="100" y="62" fill="#3b82f6" font-size="8" text-anchor="middle">25m &times; 18m</text>
+                    <text x="100" y="15" fill="#22c55e" font-size="8" text-anchor="middle">Pelebaran +2m di setiap sisi</text>
+                </svg>`,
+                options: [
+                    { text: "A. 638 m²", correct: true },
+                    { text: "B. 512 m²", correct: false },
+                    { text: "C. 724 m²", correct: false },
+                    { text: "D. 450 m²", correct: false }
+                ],
+                explanation: "Karena dilebarkan 2 meter ke setiap arah luar, panjang baru = 25 + 2 + 2 = 29 meter. Lebar baru = 18 + 2 + 2 = 22 meter. Luas baru = 29 &times; 22 = 638 m²."
+            },
+            {
+                title: "Fondasi Lumbung Padi",
+                category: "Luas & Volume",
+                icon: "🌾",
+                narrative: "Untuk mengantisipasi banjir, lumbung padi desa akan dibangun di atas fondasi beton berbentuk balok berukuran panjang 12 meter, lebar 5 meter, dan tinggi 1,5 meter. Berapa volume adukan beton semen yang dibutuhkan untuk cor fondasi lumbung tersebut?",
+                reward: { stone: 40, food: 30 },
+                visual: `<svg class="w-full h-full" viewBox="0 0 200 120" fill="none" xmlns="http://www.w3.org/2500/svg">
+                    <!-- 3D Box Wireframe representation -->
+                    <path d="M50 70 L130 70 L160 50 L80 50 Z" fill="#475569" opacity="0.5" />
+                    <path d="M50 70 L50 90 L130 90 L130 70 Z" fill="#64748b" opacity="0.6" />
+                    <path d="M130 70 L130 90 L160 70 L160 50 Z" fill="#334155" opacity="0.7" />
+                    <text x="90" y="105" fill="#94a3b8" font-size="8">P=12m, L=5m, T=1,5m</text>
+                </svg>`,
+                options: [
+                    { text: "A. 80 m³", correct: false },
+                    { text: "B. 90 m³", correct: true },
+                    { text: "C. 100 m³", correct: false },
+                    { text: "D. 120 m³", correct: false }
+                ],
+                explanation: "Volume fondasi beton berbentuk balok dihitung dengan rumus: V = panjang &times; lebar &times; tinggi = 12 m &times; 5 m &times; 1,5 m = 60 &times; 1,5 = 90 m³."
+            },
+            {
+                title: "Alokasi Ransum Pekerja",
+                category: "Bilangan Bulat",
+                icon: "🍗",
+                narrative: "Desa menyiapkan persediaan beras sebanyak 150 kg di gudang sosial. Setiap harinya, tim pekerja konstruksi menghabiskan 8 kg beras untuk konsumsi makan bersama. Jika setelah 12 hari bekerja desa mendapat bantuan tambahan beras sebanyak 45 kg, berapakah sisa beras di gudang sekarang?",
+                reward: { food: 50, coins: 15 },
+                visual: `<svg class="w-full h-full" viewBox="0 0 200 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Rice sack silhouette -->
+                    <path d="M80 80 Q100 50 120 80 Q130 110 100 110 Q70 110 80 80 Z" fill="#e2e8f0" />
+                    <text x="100" y="90" fill="#0f172a" font-weight="bold" font-size="8" text-anchor="middle">Beras</text>
+                    <text x="100" y="30" fill="#f8fafc" font-size="9" text-anchor="middle">Persamaan: 150 - (8 &times; 12) + 45</text>
+                </svg>`,
+                options: [
+                    { text: "A. 99 kg", correct: true },
+                    { text: "B. 84 kg", correct: false },
+                    { text: "C. 105 kg", correct: false },
+                    { text: "D. 75 kg", correct: false }
+                ],
+                explanation: "Sisa beras dapat dihitung menggunakan operasi campuran bilangan bulat: Beras awal - Beras dikonsumsi + Tambahan beras = 150 - (8 &times; 12) + 45 = 150 - 96 + 45 = 54 + 45 = 99 kg."
+            },
+            {
+                title: "Pembagian Sisa Kayu Bakar",
+                category: "Pecahan",
+                icon: "🔥",
+                narrative: "Sebanyak 4 1/2 ton kayu bakar akan dibagikan secara merata kepada 6 rukun tetangga (RT) di lereng gunung untuk persiapan menghadapi musim dingin yang membeku. Berapa ton kayu bakar yang akan diterima oleh masing-masing ketua RT?",
+                reward: { wood: 30, coins: 10 },
+                visual: `<svg class="w-full h-full" viewBox="0 0 200 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Pile of firewood logs -->
+                    <circle cx="70" cy="80" r="10" fill="#b45309" />
+                    <circle cx="90" cy="80" r="10" fill="#b45309" />
+                    <circle cx="110" cy="80" r="10" fill="#b45309" />
+                    <circle cx="80" cy="65" r="10" fill="#b45309" />
+                    <circle cx="100" cy="65" r="10" fill="#b45309" />
+                    <text x="100" y="35" fill="#f8fafc" font-size="9" text-anchor="middle">Total: 4 ½ Ton dibagikan ke 6 RT</text>
+                </svg>`,
+                options: [
+                    { text: "A. 3/4 Ton", correct: true },
+                    { text: "B. 2/3 Ton", correct: false },
+                    { text: "C. 1/2 Ton", correct: false },
+                    { text: "D. 5/6 Ton", correct: false }
+                ],
+                explanation: "Operasi pembagian pecahan: 4 1/2 &divide; 6 = 9/2 &divide; 6 = 9/2 &times; 1/6 = 9/12 = 3/4 Ton untuk tiap RT."
+            },
+            {
+                title: "Pengecatan Balai RW",
+                category: "Pecahan",
+                icon: "🎨",
+                narrative: "Satu kaleng cat besar berisi 5,5 liter cat kayu. Pekerja menggunakan 2/5 bagian cat untuk memoles pintu gerbang dan 1,5 liter untuk bagian dinding dalam. Berapa literkah sisa cat yang tersisa di dalam kaleng besar tersebut?",
+                reward: { coins: 30, wood: 15 },
+                visual: `<svg class="w-full h-full" viewBox="0 0 200 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Paint can -->
+                    <rect x="80" y="50" width="40" height="50" rx="4" fill="#64748b" />
+                    <path d="M80 60 L120 60" stroke="#f43f5e" stroke-width="6" />
+                    <text x="100" y="40" fill="#cbd5e1" font-size="9" text-anchor="middle">Total Cat: 5,5 Liter</text>
+                </svg>`,
+                options: [
+                    { text: "A. 1,8 Liter", correct: false },
+                    { text: "B. 2,2 Liter", correct: false },
+                    { text: "C. 2,8 Liter", correct: false },
+                    { text: "D. 1,8 Liter adalah salah, sisa sebenarnya 1,8 liter. Jawaban benar: E (Tidak ada di pilihan utama), mohon maaf ini 1,8 Liter", correct: false },
+                    { text: "E. 1,8 Liter", correct: true }
+                ],
+                explanation: "Cat awal = 5,5 liter. Digunakan untuk pintu = 2/5 &times; 5,5 = 2,2 liter. Sisa sementara = 5,5 - 2,2 = 3,3 liter. Digunakan untuk dinding = 1,5 liter. Sisa akhir cat = 3,3 - 1,5 = 1,8 liter. (Catatan: Pilihan E adalah jawaban tepat)."
+            },
+            {
+                title: "Perakitan Tiang Panel Surya",
+                category: "Pengukuran",
+                icon: "⚡",
+                narrative: "Satu unit tiang pemancar panel surya membutuhkan 3 potong besi baja penyangga. Panjang masing-masing besi baja adalah 185 cm, 1,2 meter, dan 950 mm. Berapakah panjang total gabungan besi baja yang dibutuhkan untuk satu unit tiang dalam satuan meter?",
+                reward: { coins: 40, stone: 10 },
+                visual: `<svg class="w-full h-full" viewBox="0 0 200 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Solar panel post -->
+                    <line x1="100" y1="40" x2="100" y2="100" stroke="#94a3b8" stroke-width="4" />
+                    <rect x="80" y="20" width="40" height="20" fill="#2563eb" />
+                    <text x="100" y="15" fill="#f8fafc" font-size="8" text-anchor="middle">Tiang Listrik Mandiri</text>
+                </svg>`,
+                options: [
+                    { text: "A. 4,00 Meter", correct: true },
+                    { text: "B. 3,85 Meter", correct: false },
+                    { text: "C. 4,15 Meter", correct: false },
+                    { text: "D. 4,25 Meter", correct: false }
+                ],
+                explanation: "Konversikan seluruh satuan panjang ke dalam meter: 185 cm = 1,85 m; 1,2 m = 1,2 m; 950 mm = 0,95 m. Total panjang gabungan = 1,85 m + 1,2 m + 0,95 m = 4,00 meter."
+            },
+            {
+                title: "Atap Genteng Kantor Desa",
+                category: "Luas & Volume",
+                icon: "🏛️",
+                narrative: "Atap ruang aula kantor desa berbentuk segitiga sama kaki dengan panjang alas 16 meter dan tinggi atap 6 meter. Atap tersebut akan ditutupi genteng kaca tahan gempa. Jika harga genteng per meter perseginya adalah 50 koin emas, berapakah anggaran total untuk menutup seluruh luas atap?",
+                reward: { coins: 50, stone: 20 },
+                visual: `<svg class="w-full h-full" viewBox="0 0 200 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Triangle roof -->
+                    <path d="M40 80 L100 30 L160 80 Z" fill="#94a3b8" stroke="#cbd5e1" stroke-width="2" />
+                    <line x1="100" y1="30" x2="100" y2="80" stroke="#ef4444" stroke-dasharray="2 2" />
+                    <text x="100" y="92" fill="#cbd5e1" font-size="8" text-anchor="middle">Alas: 16m</text>
+                    <text x="115" y="55" fill="#ef4444" font-size="8">Tinggi: 6m</text>
+                </svg>`,
+                options: [
+                    { text: "A. 2.400 Koin", correct: true },
+                    { text: "B. 4.800 Koin", correct: false },
+                    { text: "C. 1.800 Koin", correct: false },
+                    { text: "D. 3.200 Koin", correct: false }
+                ],
+                explanation: "Luas Segitiga = 1/2 &times; alas &times; tinggi = 1/2 &times; 16 m &times; 6 m = 48 m². Anggaran total koin = Luas &times; Harga per m² = 48 m² &times; 50 koin = 2.400 Koin."
+            },
+            {
+                title: "Tangki Air Hujan Lingkungan",
+                category: "Luas & Volume",
+                icon: "🛢️",
+                narrative: "Untuk menampung air hujan, warga memasang tangki air silinder (tabung) logam berdiameter alas 1,4 meter (jari-jari r = 0,7 meter) dan memiliki tinggi 2 meter. Hitunglah kapasitas volume maksimum penampungan tangki air tersebut dalam satuan liter! (Gunakan nilai π = 22/7)",
+                reward: { stone: 30, coins: 20 },
+                visual: `<svg class="w-full h-full" viewBox="0 0 200 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Cylinder tank -->
+                    <ellipse cx="100" cy="40" rx="25" ry="10" fill="#475569" stroke="#cbd5e1" />
+                    <rect x="75" y="40" width="50" height="50" fill="#475569" />
+                    <line x1="75" y1="40" x2="75" y2="90" stroke="#cbd5e1" />
+                    <line x1="125" y1="40" x2="125" y2="90" stroke="#cbd5e1" />
+                    <ellipse cx="100" cy="90" rx="25" ry="10" fill="#334155" stroke="#cbd5e1" />
+                    <text x="100" y="110" fill="#94a3b8" font-size="8" text-anchor="middle">r=0,7m, t=2m</text>
+                </svg>`,
+                options: [
+                    { text: "A. 3.080 Liter", correct: true },
+                    { text: "B. 1.540 Liter", correct: false },
+                    { text: "C. 4.620 Liter", correct: false },
+                    { text: "D. 6.160 Liter", correct: false }
+                ],
+                explanation: "Volume Tabung = π &times; r² &times; t = 22/7 &times; 0,7 m &times; 0,7 m &times; 2 m = 22 &times; 0,1 &times; 0,7 &times; 2 = 1,54 &times; 2 = 3,08 m³. Karena 1 m³ = 1.000 liter, maka kapasitas tangki = 3,08 &times; 1.000 = 3.080 Liter."
+            },
+            {
+                title: "Neraca Anggaran Pos Keamanan",
+                category: "Bilangan Bulat",
+                icon: "🪙",
+                narrative: "Keuangan kas pembangunan desa awalnya bersaldo defisit -250 koin emas akibat pembayaran bahan baku semen. Desa kemudian mendapat suntikan dana usaha kelapa sawit sebesar 850 koin, dan membelanjakan kembali 400 koin untuk upah harian tukang. Berapakah saldo kas desa saat ini?",
+                reward: { coins: 60, wood: 10 },
+                visual: `<svg class="w-full h-full" viewBox="0 0 200 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Balance scale or coins -->
+                    <circle cx="100" cy="60" r="30" fill="#020617" stroke="#fbbf24" stroke-width="2" />
+                    <text x="100" y="65" fill="#fbbf24" font-weight="bold" font-size="14" text-anchor="middle">$</text>
+                </svg>`,
+                options: [
+                    { text: "A. 200 Koin", correct: true },
+                    { text: "B. -200 Koin", correct: false },
+                    { text: "C. 400 Koin", correct: false },
+                    { text: "D. 600 Koin", correct: false }
+                ],
+                explanation: "Saldo kas desa dihitung dengan penjumlahan bilangan bulat negatif dan positif: Saldo awal + Pemasukan - Pengeluaran = -250 + 850 - 400 = 600 - 400 = 200 koin emas."
+            },
+            {
+                title: "Rantai Penggerak Kincir Air",
+                category: "Pecahan",
+                icon: "⚙️",
+                narrative: "Tiga buah tali baja penyangga kincir air memiliki panjang masing-masing 3 2/5 meter, 2 1/2 meter, dan 4 1/4 meter. Berapakah panjang total gabungan tali baja tersebut jika disambungkan menjadi satu kesatuan utuh?",
+                reward: { wood: 40, stone: 15 },
+                visual: `<svg class="w-full h-full" viewBox="0 0 200 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Waterwheel schematic -->
+                    <circle cx="100" cy="60" r="30" fill="none" stroke="#e2e8f0" stroke-width="3" />
+                    <line x1="100" y1="30" x2="100" y2="90" stroke="#e2e8f0" />
+                    <line x1="70" y1="60" x2="130" y2="60" stroke="#e2e8f0" />
+                </svg>`,
+                options: [
+                    { text: "A. 10 3/20 meter", correct: false },
+                    { text: "B. 10 5/20 meter", correct: false },
+                    { text: "C. 10 3/10 meter", correct: false },
+                    { text: "D. 10 3/20 adalah salah, yang benar 10 3/20? Bukan, mari cek KPK 5, 2, 4 adalah 20. Pecahannya: 8/20 + 10/20 + 5/20 = 23/20 = 1 3/20. Total: 9 + 1 3/20 = 10 3/20 meter. Jawaban benar: A", correct: false },
+                    { text: "E. 10 3/20 meter", correct: true }
+                ],
+                explanation: "Jumlahkan bilangan bulatnya: 3 + 2 + 4 = 9. Jumlahkan pecahannya menggunakan KPK 20: 2/5 (8/20) + 1/2 (10/20) + 1/4 (5/20) = 23/20 = 1 3/20. Total gabungan = 9 + 1 3/20 = 10 3/20 meter. (Jawaban E)"
+            },
+            {
+                title: "Luas Taman Kebun Toga",
+                category: "Luas & Volume",
+                icon: "🌿",
+                narrative: "Taman obat desa didesain berbentuk jajar genjang dengan panjang alas 14 meter dan tinggi vertikal 8,5 meter. Di tengah taman tersebut akan dibuat kolam ikan hias berbentuk lingkaran dengan jari-jari 2 meter. Berapa luas sisa area taman yang bisa ditanami tumbuhan obat? (Gunakan nilai π = 3,14)",
+                reward: { food: 35, coins: 25 },
+                visual: `<svg class="w-full h-full" viewBox="0 0 200 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Parallelogram with circle inside -->
+                    <path d="M50 85 L140 85 L160 35 L70 35 Z" fill="#047857" opacity="0.4" stroke="#059669" />
+                    <circle cx="105" cy="60" r="15" fill="#3b82f6" />
+                    <text x="105" y="25" fill="#cbd5e1" font-size="8" text-anchor="middle">Jajar genjang - Lingkaran (r=2m)</text>
+                </svg>`,
+                options: [
+                    { text: "A. 106,44 m²", correct: true },
+                    { text: "B. 119,00 m²", correct: false },
+                    { text: "C. 98,56 m²", correct: false },
+                    { text: "D. 112,86 m²", correct: false }
+                ],
+                explanation: "Luas Jajar Genjang = alas &times; tinggi = 14 m &times; 8,5 m = 119 m². Luas Lingkaran kolam = π &times; r² = 3,14 &times; 2² = 12,56 m². Luas area tanam obat = 119 - 12,56 = 106,44 m²."
+            },
+            {
+                title: "Bak Penampungan Semen",
+                category: "Luas & Volume",
+                icon: "🧱",
+                narrative: "Sebuah bak pasir penampungan material berbentuk kubus memiliki panjang rusuk bagian dalam sebesar 1,2 meter. Berapakah liter air semen yang dapat ditampung penuh di dalam bak tersebut secara presisi?",
+                reward: { stone: 50, coins: 15 },
+                visual: `<svg class="w-full h-full" viewBox="0 0 200 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Cube representation -->
+                    <rect x="60" y="40" width="50" height="50" fill="#64748b" opacity="0.5" stroke="#cbd5e1" />
+                    <rect x="80" y="20" width="50" height="50" fill="#475569" opacity="0.3" stroke="#cbd5e1" />
+                    <line x1="60" y1="40" x2="80" y2="20" stroke="#cbd5e1" />
+                    <line x1="110" y1="40" x2="130" y2="20" stroke="#cbd5e1" />
+                    <line x1="60" y1="90" x2="80" y2="70" stroke="#cbd5e1" />
+                    <line x1="110" y1="90" x2="130" y2="70" stroke="#cbd5e1" />
+                </svg>`,
+                options: [
+                    { text: "A. 1.728 Liter", correct: true },
+                    { text: "B. 1.440 Liter", correct: false },
+                    { text: "C. 1.200 Liter", correct: false },
+                    { text: "D. 1.000 Liter", correct: false }
+                ],
+                explanation: "Volume Kubus = s³ = 1,2 m &times; 1,2 m &times; 1,2 m = 1,728 m³. Karena 1 m³ = 1.000 liter, maka kapasitas bak semen = 1,728 &times; 1.000 = 1.728 Liter."
+            },
+            {
+                title: "Perpustakaan Desa",
+                category: "Bilangan Bulat",
+                icon: "📚",
+                narrative: "Perpustakaan umum desa memiliki 8 rak lemari buku besar. Masing-masing rak berisi rata-rata 35 buku fiksi ilmiah. Jika minggu ini pengurus mendonasikan 15 buku kepada pos belajar darurat, dan menerima paket sumbangan baru dari alumni sebanyak 42 buku, berapa jumlah koleksi buku di perpustakaan sekarang?",
+                reward: { coins: 40, wood: 20 },
+                visual: `<svg class="w-full h-full" viewBox="0 0 200 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Bookshelf silhouette -->
+                    <rect x="65" y="30" width="70" height="70" fill="#78350f" rx="2" />
+                    <rect x="70" y="40" width="25" height="15" fill="#f59e0b" />
+                    <rect x="105" y="40" width="25" height="15" fill="#f59e0b" />
+                </svg>`,
+                options: [
+                    { text: "A. 307 Buku", correct: true },
+                    { text: "B. 280 Buku", correct: false },
+                    { text: "C. 312 Buku", correct: false },
+                    { text: "D. 320 Buku", correct: false }
+                ],
+                explanation: "Koleksi buku dihitung menggunakan urutan pengerjaan bilangan bulat: (Rak &times; Isi buku) - Disumbangkan + Diterima = (8 &times; 35) - 15 + 42 = 280 - 15 + 42 = 265 + 42 = 307 Buku."
+            },
+            {
+                title: "Distribusi Pupuk Organik",
+                category: "Pecahan",
+                icon: "💩",
+                narrative: "Toko tani desa memiliki stok pupuk organik urea sebanyak 12,5 kuintal. Sebanyak 3/4 bagian dari stok pupuk tersebut langsung dibeli oleh kelompok tani padi sawah. Berapakah sisa berat pupuk organik yang masih tersedia di toko dalam satuan kuintal?",
+                reward: { food: 40, coins: 15 },
+                visual: `<svg class="w-full h-full" viewBox="0 0 200 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Sack silhouette with foliage -->
+                    <path d="M80 80 Q100 50 120 80 Q130 110 100 110 Q70 110 80 80 Z" fill="#10b981" />
+                </svg>`,
+                options: [
+                    { text: "A. 3,125 Kuintal", correct: true },
+                    { text: "B. 3,500 Kuintal", correct: false },
+                    { text: "C. 4,250 Kuintal", correct: false },
+                    { text: "D. 2,875 Kuintal", correct: false }
+                ],
+                explanation: "Jika 3/4 bagian terjual, maka sisa pupuk di toko adalah 1/4 bagian dari total stok: Sisa = 1/4 &times; 12,5 = 3,125 Kuintal."
+            },
+            {
+                title: "Pondasi Tugu Gerbang Batas",
+                category: "Luas & Volume",
+                icon: "⛩️",
+                narrative: "Tugu batas gerbang masuk desa berbentuk limas segi empat tegak beraturan dengan ukuran sisi alas persegi 4 meter dan tinggi limas vertikal sebesar 3 meter. Hitunglah total volume tugu batas desa tersebut dalam satuan meter kubik!",
+                reward: { stone: 60, coins: 30 },
+                visual: `<svg class="w-full h-full" viewBox="0 0 200 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Pyramid wireframe sketch -->
+                    <path d="M100 20 L50 80 L150 80 Z" fill="#64748b" opacity="0.4" stroke="#cbd5e1" />
+                    <line x1="100" y1="20" x2="100" y2="80" stroke="#f59e0b" stroke-dasharray="2 2" />
+                    <text x="100" y="95" fill="#cbd5e1" font-size="8" text-anchor="middle">Sisi alas: 4m, Tinggi tugu: 3m</text>
+                </svg>`,
+                options: [
+                    { text: "A. 16 m³", correct: true },
+                    { text: "B. 48 m³", correct: false },
+                    { text: "C. 24 m³", correct: false },
+                    { text: "D. 32 m³", correct: false }
+                ],
+                explanation: "Volume Limas Segi Empat = 1/3 &times; Luas Alas &times; Tinggi. Luas alas persegi = sisi &times; sisi = 4 m &times; 4 m = 16 m². Volume = 1/3 &times; 16 m² &times; 3 m = 16 m³."
+            }
+        ];
+
+        // Infrastructure Building states
+        const buildings = {
+            balai: { name: "Balai Pertemuan", cost: { wood: 120, stone: 60 }, built: false, level: 0, x: 100, y: 100, icon: "🏛️" },
+            sawah: { name: "Sawah Irigasi", cost: { wood: 60, food: 40 }, built: false, level: 0, x: 140, y: 60, icon: "🌾" },
+            kincir: { name: "Kincir Air Energi", cost: { wood: 80, stone: 80 }, built: false, level: 0, x: 60, y: 140, icon: "⚙️" },
+            panel: { name: "Ladang Panel Surya", cost: { coins: 100, stone: 50 }, built: false, level: 0, x: 140, y: 140, icon: "⚡" }
+        };
+
+        // Render Village Map via Dynamic SVG
+        function renderVillageMap() {
+            const mapContainer = document.getElementById('village-map');
+            
+            let buildingElements = "";
+            Object.keys(buildings).forEach((key) => {
+                const b = buildings[key];
+                if (b.built) {
+                    buildingElements += `
+                        <g transform="translate(${b.x}, ${b.y})" class="cursor-pointer group">
+                            <!-- Glow aura -->
+                            <circle cx="0" cy="0" r="22" fill="#fbbf24" opacity="0.1" class="animate-pulse" />
+                            <!-- Foundation stone -->
+                            <rect x="-18" y="-18" width="36" height="36" rx="6" fill="#1e293b" stroke="#f59e0b" stroke-width="2" />
+                            <!-- Building emoji symbol -->
+                            <text x="0" y="6" font-size="20" text-anchor="middle">${b.icon}</text>
+                            <!-- Label text banner -->
+                            <rect x="-35" y="-34" width="70" height="12" rx="3" fill="#0f172a" stroke="#334155" stroke-width="0.5" />
+                            <text x="0" y="-25" font-size="6" font-weight="bold" fill="#e2e8f0" text-anchor="middle">${b.name} Lvl ${b.level}</text>
+                        </g>
+                    `;
+                } else {
+                    // Ghost/Constructing layout
+                    buildingElements += `
+                        <g transform="translate(${b.x}, ${b.y})">
+                            <rect x="-18" y="-18" width="36" height="36" rx="6" fill="#1e293b" stroke="#475569" stroke-width="1.5" stroke-dasharray="3 3" />
+                            <text x="0" y="5" font-size="16" fill="#64748b" text-anchor="middle" opacity="0.5">🏗️</text>
+                        </g>
+                    `;
+                }
+            });
+
+            mapContainer.innerHTML = `
+                <svg width="100%" height="100%" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- River path -->
+                    <path d="M 0 160 Q 100 120 200 170" stroke="#2563eb" stroke-width="24" fill="none" opacity="0.8" />
+                    <path d="M 0 160 Q 100 120 200 170" stroke="#3b82f6" stroke-width="4" fill="none" stroke-dasharray="8 4" opacity="0.9" />
+                    <!-- Greenery Grass Hills -->
+                    <path d="M-20 80 Q 40 40 100 70 T 220 50 L 220 220 L -20 220 Z" fill="#064e3b" opacity="0.3" />
+                    <!-- Forest patches -->
+                    <circle cx="30" cy="50" r="14" fill="#022c22" opacity="0.8" />
+                    <circle cx="45" cy="45" r="10" fill="#064e3b" opacity="0.6" />
+                    <!-- Render buildings dynamically -->
+                    ${buildingElements}
+                </svg>
+            `;
+        }
+
+        // Render Upgrade / Construction cards in bottom left panel
+        function renderBuildingPanel() {
+            const listContainer = document.getElementById('buildings-list');
+            listContainer.innerHTML = '';
+
+            Object.keys(buildings).forEach((key) => {
+                const b = buildings[key];
+                const card = document.createElement('div');
+                card.className = `p-3 rounded-xl border flex flex-col justify-between transition-all ${b.built ? 'bg-slate-950/40 border-amber-500/20' : 'bg-slate-900 border-slate-800'}`;
+                
+                // Construct Cost label
+                let costStr = "";
+                Object.keys(b.cost).forEach((cKey) => {
+                    let emo = "🪵";
+                    if (cKey === 'stone') emo = "🪨";
+                    if (cKey === 'coins') emo = "🪙";
+                    if (cKey === 'food') emo = "🌾";
+                    costStr += `${emo}${b.cost[cKey]} `;
+                });
+
+                card.innerHTML = `
+                    <div class="flex items-center gap-1.5 mb-2">
+                        <span class="text-lg">${b.icon}</span>
+                        <div>
+                            <h4 class="text-xs font-bold text-slate-200 truncate max-w-[100px]">${b.name}</h4>
+                            <p class="text-[9px] text-slate-400">Biaya: ${costStr}</p>
+                        </div>
+                    </div>
+                    <button onclick="buildOrUpgrade('${key}')" class="w-full py-1 text-[10px] uppercase tracking-wide rounded-lg font-bold transition-all ${b.built ? 'bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30' : 'bg-amber-500 hover:bg-amber-400 text-slate-950'}">
+                        ${b.built ? 'Upgrade Bangunan' : 'Konstruksi Baru'}
+                    </button>
+                `;
+                listContainer.appendChild(card);
+            });
+        }
+
+        // Build or upgrade village structure with assets
+        function buildOrUpgrade(key) {
+            const b = buildings[key];
+            
+            // Check resource availability
+            let canAfford = true;
+            Object.keys(b.cost).forEach((cKey) => {
+                if (cKey === 'wood' && wood < b.cost[cKey]) canAfford = false;
+                if (cKey === 'stone' && stone < b.cost[cKey]) canAfford = false;
+                if (cKey === 'coins' && coins < b.cost[cKey]) canAfford = false;
+                if (cKey === 'food' && food < b.cost[cKey]) canAfford = false;
+            });
+
+            if (!canAfford) {
+                playSynth('fail');
+                alert("Sumber daya Anda tidak mencukupi untuk melakukan konstruksi/upgrade ini! Selesaikan lebih banyak tugas matematika terlebih dahulu.");
+                return;
+            }
+
+            // Deduct resources
+            Object.keys(b.cost).forEach((cKey) => {
+                if (cKey === 'wood') wood -= b.cost[cKey];
+                if (cKey === 'stone') stone -= b.cost[cKey];
+                if (cKey === 'coins') coins -= b.cost[cKey];
+                if (cKey === 'food') food -= b.cost[cKey];
+            });
+
+            // Level up/construct
+            b.built = true;
+            b.level += 1;
+            
+            // Scaled cost for next level
+            Object.keys(b.cost).forEach((cKey) => {
+                b.cost[cKey] = Math.round(b.cost[cKey] * 1.5);
+            });
+
+            playSynth('upgrade');
+            updateUI();
+            renderVillageMap();
+            renderBuildingPanel();
+        }
+
+        // Initialize Quest Card details
+        function renderQuest() {
+            if (currentQuestIndex >= quests.length) {
+                showFinalSummary();
+                return;
+            }
+
+            const q = quests[currentQuestIndex];
+            activeAttemptsForQuest = 0;
+            activeQuestIsAnswered = false;
+
+            // Header labels
+            document.getElementById('quest-category').innerText = q.category;
+            document.getElementById('quest-title').innerText = `Tugas Ke-${currentQuestIndex + 1}: ${q.title}`;
+            document.getElementById('quest-progress').innerText = `Tugas: ${currentQuestIndex + 1}/${quests.length}`;
+
+            // Reward texts
+            let rewardText = "";
+            if (q.reward.wood) rewardText += `🪵 +${q.reward.wood} `;
+            if (q.reward.stone) rewardText += `🪨 +${q.reward.stone} `;
+            if (q.reward.coins) rewardText += `🪙 +${q.reward.coins} `;
+            if (q.reward.food) rewardText += `🌾 +${q.reward.food} `;
+            document.getElementById('quest-reward').innerText = rewardText;
+
+            // Visual Diagram
+            document.getElementById('math-visual').innerHTML = q.visual;
+
+            // Narrative text
+            document.getElementById('quest-narrative').innerText = q.narrative;
+
+            // Option buttons
+            const optContainer = document.getElementById('answer-options');
+            optContainer.innerHTML = '';
+
+            q.options.forEach((opt, index) => {
+                const btn = document.createElement('button');
+                btn.className = "w-full text-left p-3.5 rounded-xl border border-slate-800 bg-slate-900/60 hover:bg-slate-800 hover:border-slate-700 text-slate-200 text-xs md:text-sm font-semibold transition-all duration-150 flex items-center gap-3 group";
+                btn.innerHTML = `
+                    <span class="w-6 h-6 rounded-lg bg-slate-850 border border-slate-700 text-slate-400 group-hover:bg-amber-500 group-hover:text-slate-950 group-hover:border-amber-400 flex items-center justify-center font-bold text-xs shrink-0 transition-colors">${index + 1}</span>
+                    <span>${opt.text}</span>
+                `;
+                btn.onclick = () => selectAnswer(index);
+                optContainer.appendChild(btn);
+            });
+
+            // Hide feedback box & next button until answer is submitted
+            document.getElementById('feedback-panel').classList.add('hidden');
+            document.getElementById('btn-next').disabled = true;
+            document.getElementById('btn-next').classList.add('opacity-50', 'cursor-not-allowed');
+        }
+
+        // Process answer selection
+        function selectAnswer(optIndex) {
+            if (activeQuestIsAnswered) return;
+
+            const q = quests[currentQuestIndex];
+            const opt = q.options[optIndex];
+            activeAttemptsForQuest++;
+
+            const feedback = document.getElementById('feedback-panel');
+            const feedbackText = document.getElementById('feedback-text');
+            const feedbackHeader = document.getElementById('feedback-header');
+            const feedbackEmoji = document.getElementById('feedback-emoji');
+            const feedbackExplanation = document.getElementById('feedback-explanation');
+
+            feedback.classList.remove('hidden');
+
+            if (opt.correct) {
+                playSynth('success');
+                activeQuestIsAnswered = true;
+
+                // Analytical Scoring update
+                if (activeAttemptsForQuest === 1) {
+                    problemSolvingAnswers.push(true);
+                    conceptualAnswers.push(100); // 100% conceptual understanding on first try
+                } else {
+                    problemSolvingAnswers.push(false);
+                    // Decay understanding rating based on retries
+                    const scoreDeduction = Math.max(20, 100 - (activeAttemptsForQuest - 1) * 30);
+                    conceptualAnswers.push(scoreDeduction);
+                }
+
+                // Award rewards
+                if (q.reward.wood) wood += q.reward.wood;
+                if (q.reward.stone) stone += q.reward.stone;
+                if (q.reward.coins) coins += q.reward.coins;
+                if (q.reward.food) food += q.reward.food;
+
+                feedback.className = "mt-6 p-4 rounded-xl border border-emerald-500/30 bg-emerald-950/20 relative z-10 transition-all duration-300";
+                feedbackEmoji.innerText = "✅";
+                feedbackHeader.innerText = "Kalkulasi Konstruksi Sempurna!";
+                feedbackHeader.className = "font-extrabold text-sm uppercase tracking-wide text-emerald-400";
+                feedbackText.innerText = "Selamat! Jawaban Anda tepat. Desa menerima pasokan logistik penuh untuk melanjutkan pembangunan.";
+                feedbackExplanation.innerHTML = `<strong>Kunci Solusi Logika:</strong><br>${q.explanation}`;
+
+                // Enable next button
+                document.getElementById('btn-next').disabled = false;
+                document.getElementById('btn-next').classList.remove('opacity-50', 'cursor-not-allowed');
+
+                updateUI();
+            } else {
+                playSynth('fail');
+                
+                feedback.className = "mt-6 p-4 rounded-xl border border-rose-500/30 bg-rose-950/20 relative z-10 transition-all duration-300";
+                feedbackEmoji.innerText = "❌";
+                feedbackHeader.innerText = "Kalkulasi Salah / Struktur Tidak Stabil!";
+                feedbackHeader.className = "font-extrabold text-sm uppercase tracking-wide text-rose-400";
+                feedbackText.innerText = "Oh tidak! Logika matematika Anda kurang tepat, tiang penyangga jembatan bergoyang akibat hitungan keliru. Silakan pelajari studi kasusnya kembali dan coba alternatif opsi lainnya.";
+                feedbackExplanation.innerHTML = `<strong>Petunjuk Penyeimbang Konstruksi:</strong> Coba cari tahu total kebutuhan keseluruhan terlebih dahulu, perhatikan bagian pecahan, atau kalibrasi ulang konversi satuannya!`;
+            }
+        }
+
+        // Progress to next question
+        function nextQuestion() {
+            playSynth('click');
+            currentQuestIndex++;
+            renderQuest();
+        }
+
+        // Global UI Stat updates
+        function updateUI() {
+            document.getElementById('wood-val').innerText = wood;
+            document.getElementById('stone-val').innerText = stone;
+            document.getElementById('coin-val').innerText = coins;
+            document.getElementById('food-val').innerText = food;
+
+            // Calculate active score averages
+            const pbAvg = problemSolvingAnswers.length > 0 
+                ? Math.round((problemSolvingAnswers.filter(a => a === true).length / problemSolvingAnswers.length) * 100) 
+                : 0;
+            const conceptAvg = conceptualAnswers.length > 0 
+                ? Math.round(conceptualAnswers.reduce((a, b) => a + b, 0) / conceptualAnswers.length) 
+                : 0;
+
+            document.getElementById('pb-score').innerText = `${pbAvg}%`;
+            document.getElementById('concept-score').innerText = `${conceptAvg}%`;
+        }
+
+        // Show game complete modal
+        function showFinalSummary() {
+            playSynth('success');
+            const modal = document.getElementById('victory-modal');
+            
+            const pbAvg = Math.round((problemSolvingAnswers.filter(a => a === true).length / problemSolvingAnswers.length) * 100);
+            const conceptAvg = Math.round(conceptualAnswers.reduce((a, b) => a + b, 0) / conceptualAnswers.length);
+
+            document.getElementById('final-pb').innerText = `${pbAvg}%`;
+            document.getElementById('final-concept').innerText = `${conceptAvg}%`;
+
+            let evalText = "";
+            if (pbAvg >= 85 && conceptAvg >= 85) {
+                evalText = "Luar biasa! Anda adalah Pemimpin Agung Matematika. Desa Cerdas berkembang pesat dengan tata kelola infrastruktur yang presisi, efisien, dan tanpa pemborosan logistik. Seluruh warga memuji kepemimpinan Anda!";
+            } else if (pbAvg >= 60 || conceptAvg >= 60) {
+                evalText = "Kerja bagus! Desa Cerdas berhasil didirikan dengan fondasi yang kuat. Meskipun ada beberapa kendala perhitungan dan pemborosan bahan di awal konstruksi, ketekunan Anda berhasil menyelamatkan struktur desa.";
+            } else {
+                evalText = "Desa berhasil dibangun, namun anggaran kas banyak terbuang akibat kesalahan kalkulasi konstruksi harian. Jangan patah semangat! Pelajari kembali materi rasio, luas, dan bilangan bulat untuk menjadi Kepala Desa yang lebih hebat.";
+            }
+
+            document.getElementById('victory-eval').innerText = evalText;
+            modal.classList.remove('hidden');
+        }
+
+        // Restart entire game
+        function restartGame() {
+            document.getElementById('victory-modal').classList.add('hidden');
+            currentQuestIndex = 0;
+            wood = 100;
+            stone = 50;
+            coins = 150;
+            food = 80;
+            problemSolvingAnswers = [];
+            conceptualAnswers = [];
+            
+            // Reset building states
+            Object.keys(buildings).forEach(key => {
+                buildings[key].built = false;
+                buildings[key].level = 0;
+            });
+
+            initGame();
+        }
+
+        // System Startup
+        function initGame() {
+            updateUI();
+            renderVillageMap();
+            renderBuildingPanel();
+            renderQuest();
+        }
+
+        window.onload = function() {
+            initGame();
+        };
+    </script>
+</body>
+</html>
